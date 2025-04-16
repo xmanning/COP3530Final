@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="Z:\Github\voxel2025\CMakeFiles\a69bd069237b2aa36d578e1ddb8073a5\update_mappings.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Z:\Github\voxel2025\lib\glfw\src\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Z:\Github\voxel2025\lib\glfw\src\mappings.h.in">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="Z:\Github\voxel2025\lib\glfw\CMake\GenerateMappings.cmake" />
+    <None Include="Z:\Github\voxel2025\lib\glfw\src\CMakeFiles\update_mappings" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{BEC9923B-5A9E-34BD-B126-8202C87979B5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{35949B93-A197-3984-A893-B8A635CA133A}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

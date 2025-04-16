@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="Z:\Github\voxel2025\CMakeFiles\693369a922b5f2f7410b815da438693e\INSTALL_force.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{BEC9923B-5A9E-34BD-B126-8202C87979B5}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
