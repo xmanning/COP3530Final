@@ -1,6 +1,5 @@
 ﻿#include "Application.hpp"
-#include "RayTests.h"
-using namespace glm;
+#include <algorithm>
 
 int main()
 { 
@@ -30,8 +29,8 @@ bool IntersectRayBox(vec3 origin, vec3 direction, vec3 boxMin, vec3 boxMax) {
   }
 
   if(xmin>ymax || ymin>xmax) return false; // If the minimum value for one plane is > the max for another, it means the ray is outside the bounding box.
-  float tmin = glm::max(xmin, ymin);
-  float tmax = glm::min(xmax, ymax); // tightens values instead of checking both against z. Essentially if the bigger one fails, why bother checking the smaller one.
+  float tmin = max(xmin,ymin);
+  float tmax = min(xmax,ymax); // tightens values instead of checking both against z. Essentially if the bigger one fails, why bother checking the smaller one.
 
   float zmin = boxMin.z/direction.z;
   float zmax = boxMax.z/direction.z;
@@ -50,11 +49,16 @@ bool IntersectRayTriangle(vec3 origin, vec3 direction, vec3 a, vec3 b, vec3 c, v
   b-=origin;
   c-=origin;
 
-  vec3 normal = normalize(cross((b-a), (c-a))); // Gets the normal vector of the triangle.
-  float d = dot(normal, a);
-  if(dot(normal, direction)==0) return false;
-  float rdist = d/(dot(normal, direction));
-  result+=direction*rdist;
+  vec3 normal = (b-a).cross((c-a)).getNormalized(); // Gets the normal vector of the triangle.
+  float d = normal.dot(a);
+  if(normal.dot(direction)==0) return false;
+  float rdist = d/(normal.dot(direction));
+  vec3 plane_int = direction*rdist; // The point the ray intercepts the plane at.
+  if((b-a).cross((q-a)).dot(normal)<0) return false; // Checks that the actual 
+  if((c-b).cross((q-b)).dot(normal)<0) return false;
+  if((a-c).cross((q-c)).dot(normal)<0) return false;
+
+  result=plane_int;
   result+=origin; // Adding it back now.
   return true;
 
