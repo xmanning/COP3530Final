@@ -30,7 +30,7 @@ Mesh::Mesh(std::string path)
             ss >> z;
             normals.push_back({x,y,z});
         }
-        else(dataType == "f")
+        else if(dataType == "f")
         {
             for(int i = 0; i < 3; i++)
             {
@@ -46,27 +46,26 @@ Mesh::Mesh(std::string path)
         }
     }
     file.close();
-
-    for(int index : indices)
+    std::vector<glm::vec3> renderVerts;
+    for(int i = 0; i < indices.size(); i++)
     {
-        this->vertices.push_back(vertices[index]);
-    }
-    for(int index : normalIndices)
-    {
-        this->normals.push_back(normals[index]);
+        this->vertices.push_back(vertices[indices[i] - 1]);
+        renderVerts.push_back(vertices[indices[i] - 1]);
+        renderVerts.push_back(normals[normalIndices[i] - 1]);
+        vertCount++;
     }
 
-    vbo = new VBO(GL_VERTEX_ARRAY, false);
+    vbo = new VBO(GL_ARRAY_BUFFER, false);
     vao = new VAO();
     vao->Attribute(vbo, 0, 3, GL_FLOAT, sizeof(float) * 6, 0);
     vao->Attribute(vbo, 1, 3, GL_FLOAT, sizeof(float) * 6, sizeof(float) * 3);
+    vbo->Buffer(renderVerts);
 }
 
 void Mesh::Render()
 {
-    vbo->Bind();
     vao->Bind();
-    glDrawArrays(GL_TRIANGLES, 0, sizeof(vertices));
+    glDrawArrays(GL_TRIANGLES, 0, vertCount);
 }
 
 std::vector<glm::vec3>& Mesh::getVertices()

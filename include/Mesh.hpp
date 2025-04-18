@@ -9,10 +9,11 @@
 class Mesh
 {
     std::vector<glm::vec3> vertices;
-    std::vector<glm::vec3> normals;
     VBO* vbo;
     VAO* vao;
+    unsigned int vertCount = 0;
     public:
+        Mesh() {}
         Mesh(std::string path);
         void Render();
         std::vector<glm::vec3>& getVertices();

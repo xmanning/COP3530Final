@@ -3,12 +3,16 @@
 #include "VBO.hpp"
 #include "Camera.hpp"
 #include "Common.hpp"
+#include "Mesh.hpp"
+#include "BVH.h"
 class Application {
     GLFWwindow* Window;
     bool Running;
     double DeltaTime;
     Camera* camera;
     Shader* shader;
+    Mesh mesh;
+    BVH* bvh;
 public:
     static Application* instance;
     Application(const char* title);

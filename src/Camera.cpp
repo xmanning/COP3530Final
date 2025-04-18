@@ -17,6 +17,7 @@ Camera::Camera(float fov, float nearClip, float farClip)
 	this->pitch = 0;
 	this->yaw = 0;
 	this->speed = 4.f;
+	this->sensitivity = 0.1f;
 	this->viewportWidth = 1920;
 	this->viewportHeight = 1080;
 }

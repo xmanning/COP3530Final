@@ -12,27 +12,8 @@ void VBO::Bind()
     glBindBuffer(this->target, this->id);
 }
 
-void VBO::Buffer(void* data, size_t size)
+void VBO::Buffer(std::vector<glm::vec3> data)
 {
     this->Bind();
-    glBufferData(this->target, size, data, this->dynamic ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW);
+    glBufferData(this->target, data.size() * sizeof(float) * 3, data.data(), this->dynamic ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW);
 }
-
-void VBO::Buffer(std::vector<float> data)
-{
-    this->Bind();
-    glBufferData(this->target, data.size() * sizeof(float), data.data(), this->dynamic ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW);
-}
-
-void VBO::Buffer(std::vector<int> data)
-{
-    this->Bind();
-    glBufferData(this->target, data.size() * sizeof(int), data.data(), this->dynamic ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW);
-}
-
-void VBO::Buffer(std::vector<unsigned int> data)
-{
-    this->Bind();
-    glBufferData(this->target, data.size() * sizeof(int), data.data(), this->dynamic ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW);
-}
-

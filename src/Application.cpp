@@ -8,6 +8,7 @@
 #include "imgui_impl_opengl3.h"
 #include <sstream>
 
+
 Application* Application::instance = nullptr;
 
 void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
@@ -67,6 +68,9 @@ Application::Application(const char* title)
     this->shader = new Shader("res/shader.frag", "res/shader.vert");
     this->camera = new Camera(70, 0.1f, 1000.0f);
     this->DeltaTime = 1.0/60.0;
+    this->mesh = Mesh("res/megalodon shark.obj");
+    this->bvh = new BVH(this->mesh);
+
 }
 
 void Application::Start()
@@ -139,7 +143,7 @@ void Application::Render()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     this->shader->Use();
-
+    this->mesh.Render();
 
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

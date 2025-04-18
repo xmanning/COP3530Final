@@ -16,7 +16,6 @@ include_directories(${project3_SOURCE_DIR}/lib/imgui/backends)
 
 
 file(GLOB SRC_FILES
-     "**.h"
      "**.cpp"
 )
 

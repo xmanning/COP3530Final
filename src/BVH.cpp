@@ -27,15 +27,15 @@ void BVH::Node::AddTriangle(Triangle t)
         Node* correctChild;
         if (splitAxis == 0)
         {
-            correctChild = (max.x - t.center.x) < (min.x - t.center.x) ? childA : childB;
+            correctChild = (bounds.max.x - t.center.x) < (bounds.min.x - t.center.x) ? childA : childB;
         }
         else if (splitAxis == 1)
         {
-            correctChild = (max.y - t.center.y) < (min.y - t.center.y) ? childA : childB;
+            correctChild = (bounds.max.y - t.center.y) < (bounds.min.y - t.center.y) ? childA : childB;
         }
         else
         {
-            correctChild = (max.z - t.center.z) < (min.z - t.center.z) ? childA : childB;
+            correctChild = (bounds.max.z - t.center.z) < (bounds.min.z - t.center.z) ? childA : childB;
         }
         correctChild->AddTriangle(t);
     } else
@@ -65,15 +65,15 @@ void BVH::Node::Split()
         Node* correctChild;
         if (splitAxis == 0)
         {
-            correctChild = (max.x - t.center.x) < (min.x - t.center.x) ? childA : childB;
+            correctChild = (bounds.max.x - t.center.x) < (bounds.min.x - t.center.x) ? childA : childB;
         }
         else if (splitAxis == 1)
         {
-            correctChild = (max.y - t.center.y) < (min.y - t.center.y) ? childA : childB;
+            correctChild = (bounds.max.y - t.center.y) < (bounds.min.y - t.center.y) ? childA : childB;
         }
         else
         {
-            correctChild = (max.z - t.center.z) < (min.z - t.center.z) ? childA : childB;
+            correctChild = (bounds.max.z - t.center.z) < (bounds.min.z - t.center.z) ? childA : childB;
         }
         correctChild->AddTriangle(t);
     }

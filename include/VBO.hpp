@@ -1,5 +1,6 @@
 #pragma once
 #include "Common.hpp"
+#include <glm/glm.hpp>
 #include <vector>
 class VBO
 {
@@ -10,8 +11,5 @@ public:
     VBO() {};
     VBO(GLenum target, bool dynamic);
     void Bind();
-    void Buffer(void* data, size_t size);
-    void Buffer(std::vector<float> data);
-    void Buffer(std::vector<int> data);
-    void Buffer(std::vector<unsigned int> data);
+    void Buffer(std::vector<glm::vec3> data);
 };

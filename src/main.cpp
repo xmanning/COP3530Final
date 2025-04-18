@@ -30,8 +30,8 @@ bool IntersectRayBox(vec3 origin, vec3 direction, vec3 boxMin, vec3 boxMax) {
   }
 
   if(xmin>ymax || ymin>xmax) return false; // If the minimum value for one plane is > the max for another, it means the ray is outside the bounding box.
-  float tmin = max(xmin,ymin);
-  float tmax = min(xmax,ymax); // tightens values instead of checking both against z. Essentially if the bigger one fails, why bother checking the smaller one.
+  float tmin = glm::max(xmin, ymin);
+  float tmax = glm::min(xmax, ymax); // tightens values instead of checking both against z. Essentially if the bigger one fails, why bother checking the smaller one.
 
   float zmin = boxMin.z/direction.z;
   float zmax = boxMax.z/direction.z;
