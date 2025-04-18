@@ -1,8 +1,8 @@
 #include "BVH.h"
 #include "RayTests.h"
-
-int BVH::maxTriangles = 1024;
-
+#include <iostream>
+int BVH::maxTriangles = 128;
+int BVH::maxDepth = 15;
 bool BVH::BoundingBox::Contains(vec3 point) const
 {
     return min.x <= point.x && min.y <= point.y && min.z <= point.z && max.x >= point.x && max.y >= point.y && max.z >= point.z;
@@ -10,6 +10,13 @@ bool BVH::BoundingBox::Contains(vec3 point) const
 
 void BVH::BoundingBox::GrowToInclude(vec3 point)
 {
+    if(min.x == std::numeric_limits<float>::max())
+    {
+        min = point;
+        max = point;
+        return;
+    }
+
     min.x = glm::min(point.x, min.x);
     min.y = glm::min(point.y, min.y);
     min.z = glm::min(point.z, min.z);
@@ -24,57 +31,40 @@ void BVH::Node::AddTriangle(Triangle t)
 {
     if(childA != nullptr)
     {
-        Node* correctChild;
-        if (splitAxis == 0)
-        {
-            correctChild = (bounds.max.x - t.center.x) < (bounds.min.x - t.center.x) ? childA : childB;
-        }
-        else if (splitAxis == 1)
-        {
-            correctChild = (bounds.max.y - t.center.y) < (bounds.min.y - t.center.y) ? childA : childB;
-        }
-        else
-        {
-            correctChild = (bounds.max.z - t.center.z) < (bounds.min.z - t.center.z) ? childA : childB;
-        }
+        Node* correctChild = t.center[splitAxis] < splitPos ? childA : childB;
         correctChild->AddTriangle(t);
     } else
     {
         triangles.push_back(t);
-        bounds.GrowToInclude(t.a);
-        bounds.GrowToInclude(t.b);
-        bounds.GrowToInclude(t.c);
-        if (triangles.size() > maxTriangles)
+        int triCount = triangles.size();
+        if (triCount > maxTriangles && depth < maxDepth)
         {
+            std::cout << "split\n";
             Split();
         }
     }
+    bounds.GrowToInclude(t.a);
+    bounds.GrowToInclude(t.b);
+    bounds.GrowToInclude(t.c);
 }
 
 void BVH::Node::Split()
 {
     // split
+    childA = new Node();
+    childA->depth = depth + 1;
+    childB = new Node();
+    childB->depth = depth + 1;
     vec3 size = bounds.max - bounds.min;
     float largestAxis = glm::max(size.x, glm::max(size.y, size.z));
     if (largestAxis == size.x) splitAxis = 0;
     else if(largestAxis == size.y) splitAxis = 1;
     else splitAxis = 2;
+    splitPos = (bounds.max + bounds.min)[splitAxis] / 2.0f;
 
     for(Triangle& t : triangles)
     {
-        Node* correctChild;
-        if (splitAxis == 0)
-        {
-            correctChild = (bounds.max.x - t.center.x) < (bounds.min.x - t.center.x) ? childA : childB;
-        }
-        else if (splitAxis == 1)
-        {
-            correctChild = (bounds.max.y - t.center.y) < (bounds.min.y - t.center.y) ? childA : childB;
-        }
-        else
-        {
-            correctChild = (bounds.max.z - t.center.z) < (bounds.min.z - t.center.z) ? childA : childB;
-        }
+        Node* correctChild = t.center[splitAxis] < splitPos ? childA : childB;
         correctChild->AddTriangle(t);
     }
 
@@ -82,7 +72,7 @@ void BVH::Node::Split()
     triangles.clear();
 }
 
-bool BVH::Node::TestRay(vec3 origin, vec3 direction, vec3 &hitPoint, vector<BoundingBox> &hitBoxes)
+bool BVH::Node::TestRay(vec3 origin, vec3 direction, vec3 &hitPoint, BVH::Triangle& hitTriangle, vector<BoundingBox> &hitBoxes)
 {
     if (IntersectRayBox(origin, direction, bounds.min, bounds.max))
     {
@@ -93,16 +83,17 @@ bool BVH::Node::TestRay(vec3 origin, vec3 direction, vec3 &hitPoint, vector<Boun
             {
                 if (IntersectRayTriangle(origin, direction, tri.a, tri.b, tri.c, hitPoint))
                 {
+                    hitTriangle = tri;
                     return true;
                 }
             }
         } else
         {
-            if(childA->TestRay(origin, direction, hitPoint, hitBoxes))
+            if(childA->TestRay(origin, direction, hitPoint, hitTriangle, hitBoxes))
             {
                 return true;
             }
-            if(childB->TestRay(origin, direction, hitPoint, hitBoxes))
+            if(childB->TestRay(origin, direction, hitPoint, hitTriangle, hitBoxes))
             {
                 return true;
             }
@@ -113,17 +104,28 @@ bool BVH::Node::TestRay(vec3 origin, vec3 direction, vec3 &hitPoint, vector<Boun
 }
 
 
-bool BVH::TestRay(vec3 origin, vec3 direction, vec3 &hitPoint, vector<BoundingBox> &hitBoxes)
+bool BVH::TestRay(vec3 origin, vec3 direction, vec3 &hitPoint, BVH::Triangle& hitTriangle, vector<BoundingBox> &hitBoxes)
 {
-    root->TestRay(origin, direction, hitPoint, hitBoxes);
+    root->TestRay(origin, direction, hitPoint, hitTriangle, hitBoxes);
 }
 
+BVH::BoundingBox& BVH::getBounds()
+{
+    return root->bounds;
+}
+
+BVH::Node* BVH::getRoot()
+{
+    return root;
+}
 
 BVH::BVH(Mesh& mesh)
 {
     auto vertices = mesh.getVertices();
-    for(int i = 0; i < vertices.size() / 3; i += 3)
+    int i = 0;
+    while (i < vertices.size())
     {
         root->AddTriangle(Triangle(vertices[i], vertices[i + 1], vertices[i+2]));
+        i += 3;
     }
 }

@@ -5,6 +5,7 @@
 #include "Common.hpp"
 #include "Mesh.hpp"
 #include "BVH.h"
+#include "DemonstrationRenderer.hpp"
 class Application {
     GLFWwindow* Window;
     bool Running;
@@ -12,7 +13,12 @@ class Application {
     Camera* camera;
     Shader* shader;
     Mesh mesh;
+    DemonstrationRenderer* demonstrationRenderer;
     BVH* bvh;
+    bool drawModel = true;
+    bool bvhDirty = false;
+    float rayOrigin[3] = {0, 0, 8};
+    float rayDirection[3] = {0, 0, -1};
 public:
     static Application* instance;
     Application(const char* title);

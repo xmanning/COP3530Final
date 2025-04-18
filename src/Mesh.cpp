@@ -1,5 +1,5 @@
 #include "Mesh.hpp"
-
+#include <iostream>
 Mesh::Mesh(std::string path)
 {
     std::ifstream file(path);
@@ -7,7 +7,6 @@ Mesh::Mesh(std::string path)
     std::vector<glm::vec3> normals;
     std::vector<int> indices;
     std::vector<int> normalIndices;
-
     std::string buffer;
     while(std::getline(file, buffer))
     {
@@ -44,6 +43,8 @@ Mesh::Mesh(std::string path)
                 ss >> index;
             }
         }
+
+
     }
     file.close();
     std::vector<glm::vec3> renderVerts;
@@ -64,6 +65,7 @@ Mesh::Mesh(std::string path)
 
 void Mesh::Render()
 {
+    vbo->Bind();
     vao->Bind();
     glDrawArrays(GL_TRIANGLES, 0, vertCount);
 }

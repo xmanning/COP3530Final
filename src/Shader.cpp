@@ -58,7 +58,7 @@ Shader::Shader(const char* frag_path, const char* vert_path)
 	glLinkProgram(this->id);
     GLint out;
     glGetProgramiv(this->id, GL_LINK_STATUS, &out);
-    std::cout << out;
+    //std::cout << out;
 
 	this->Use();
 	glDeleteShader(frag_handle);
