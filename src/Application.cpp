@@ -71,7 +71,7 @@ Application::Application(const char* title)
 
 void Application::Start()
 {
-    
+    this->Running = true;
     while (!glfwWindowShouldClose(this->Window) && this->Running)
     {
         auto t_start = std::chrono::high_resolution_clock::now();

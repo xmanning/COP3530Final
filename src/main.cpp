@@ -1,5 +1,6 @@
 ﻿#include "Application.hpp"
-#include <algorithm>
+#include "RayTests.h"
+using namespace glm;
 
 int main()
 { 
@@ -49,10 +50,10 @@ bool IntersectRayTriangle(vec3 origin, vec3 direction, vec3 a, vec3 b, vec3 c, v
   b-=origin;
   c-=origin;
 
-  vec3 normal = (b-a).cross((c-a)).getNormalized(); // Gets the normal vector of the triangle.
-  float d = normal.dot(a);
-  if(normal.dot(direction)==0) return false;
-  float rdist = d/(normal.dot(direction));
+  vec3 normal = normalize(cross((b-a), (c-a))); // Gets the normal vector of the triangle.
+  float d = dot(normal, a);
+  if(dot(normal, direction)==0) return false;
+  float rdist = d/(dot(normal, direction));
   result+=direction*rdist;
   result+=origin; // Adding it back now.
   return true;

@@ -16,3 +16,8 @@ void Mesh::Render()
     vao->Bind();
     glDrawArrays(GL_TRIANGLES, 0, sizeof(vertices));
 }
+
+std::vector<glm::vec3>& Mesh::getVertices()
+{
+    return this->vertices;
+}
