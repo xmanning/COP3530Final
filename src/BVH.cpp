@@ -1,7 +1,7 @@
 #include "BVH.h"
 #include "RayTests.h"
 #include <iostream>
-int BVH::maxTriangles = 128;
+int BVH::maxTriangles = 1024;
 int BVH::maxDepth = 15;
 bool BVH::BoundingBox::Contains(vec3 point) const
 {
@@ -89,11 +89,15 @@ bool BVH::Node::TestRay(vec3 origin, vec3 direction, vec3 &hitPoint, BVH::Triang
             }
         } else
         {
-            if(childA->TestRay(origin, direction, hitPoint, hitTriangle, hitBoxes))
+            float dstA = RayBoundingBoxDistance(origin, direction, childA->bounds.min, childA->bounds.max);
+            float dstB = RayBoundingBoxDistance(origin, direction, childB->bounds.min, childB->bounds.max);
+            Node* first = dstB > dstA ? childA : childB;
+            Node* second = dstB > dstA ? childB : childA;
+            if(first->TestRay(origin, direction, hitPoint, hitTriangle, hitBoxes))
             {
                 return true;
             }
-            if(childB->TestRay(origin, direction, hitPoint, hitTriangle, hitBoxes))
+            if(second->TestRay(origin, direction, hitPoint, hitTriangle, hitBoxes))
             {
                 return true;
             }

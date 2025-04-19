@@ -70,7 +70,7 @@ Application::Application(const char* title)
     this->shader = new Shader("res/shader.frag", "res/shader.vert");
     this->camera = new Camera(70, 0.1f, 1000.0f);
     this->DeltaTime = 1.0/60.0;
-    this->mesh = Mesh("res/megalodon shark.obj");
+    this->mesh = Mesh("res/fish.obj");
     this->bvh = new BVH(this->mesh);
     this->demonstrationRenderer = new DemonstrationRenderer();
 }
@@ -186,13 +186,13 @@ void Application::Render()
 
 
     this->demonstrationRenderer->SetColor({1, 0, 0});
-    this->demonstrationRenderer->DrawRay({rayOrigin[0], rayOrigin[1], rayOrigin[2]}, {rayDirection[0], rayDirection[1], rayDirection[2]});
-
+    
     glm::vec3 hitPoint = {0, 0, 0};
     std::vector<BVH::BoundingBox> boxes;
     BVH::Triangle triangle = {hitPoint, hitPoint, hitPoint};
     if(bvh->TestRay({rayOrigin[0], rayOrigin[1], rayOrigin[2]}, {rayDirection[0], rayDirection[1], rayDirection[2]}, hitPoint, triangle, boxes))
     {
+        this->demonstrationRenderer->DrawLines({{rayOrigin[0], rayOrigin[1], rayOrigin[2]}, hitPoint});
         std::cout << hitPoint.x << ", " << hitPoint.y << ", " << hitPoint.z << std::endl;
         this->demonstrationRenderer->SetColor({1,0,1});
         //this->demonstrationRenderer->DrawPoints({hitPoint});
@@ -203,6 +203,10 @@ void Application::Render()
         {
             this->demonstrationRenderer->DrawBox(box);
         }
+        this->demonstrationRenderer->SetColor({0, 1, 0});
+        this->demonstrationRenderer->DrawPoints({hitPoint});
+    } else {
+        this->demonstrationRenderer->DrawRay({rayOrigin[0], rayOrigin[1], rayOrigin[2]}, {rayDirection[0], rayDirection[1], rayDirection[2]});
     }
     if (drawModel)
     {
