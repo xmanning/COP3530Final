@@ -1,7 +1,8 @@
 #include "BVH.h"
 #include "RayTests.h"
 #include <iostream>
-int BVH::maxTriangles = 1024;
+
+int BVH::maxTriangles = 512;
 int BVH::maxDepth = 15;
 bool BVH::BoundingBox::Contains(vec3 point) const
 {
@@ -39,7 +40,6 @@ void BVH::Node::AddTriangle(Triangle t)
         int triCount = triangles.size();
         if (triCount > maxTriangles && depth < maxDepth)
         {
-            std::cout << "split\n";
             Split();
         }
     }
@@ -50,7 +50,6 @@ void BVH::Node::AddTriangle(Triangle t)
 
 void BVH::Node::Split()
 {
-    // split
     childA = new Node();
     childA->depth = depth + 1;
     childB = new Node();
@@ -68,7 +67,7 @@ void BVH::Node::Split()
         correctChild->AddTriangle(t);
     }
 
-    // then clear the triangles to save memory
+
     triangles.clear();
 }
 
@@ -110,7 +109,7 @@ bool BVH::Node::TestRay(vec3 origin, vec3 direction, vec3 &hitPoint, BVH::Triang
 
 bool BVH::TestRay(vec3 origin, vec3 direction, vec3 &hitPoint, BVH::Triangle& hitTriangle, vector<BoundingBox> &hitBoxes)
 {
-    root->TestRay(origin, direction, hitPoint, hitTriangle, hitBoxes);
+    return root->TestRay(origin, direction, hitPoint, hitTriangle, hitBoxes);
 }
 
 BVH::BoundingBox& BVH::getBounds()

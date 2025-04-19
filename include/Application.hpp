@@ -19,6 +19,7 @@ class Application {
     bool bvhDirty = false;
     float rayOrigin[3] = {0, 0, 8};
     float rayDirection[3] = {0, 0, -1};
+    int currentFile = 0;
 public:
     static Application* instance;
     Application(const char* title);

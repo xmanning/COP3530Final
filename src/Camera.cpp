@@ -26,8 +26,9 @@ void Camera::HandleInput()
 {
 	
 	glm::vec3 delta = {};
-
-	float cam_speed = this->speed * 3 * Application::instance->GetDeltaTime();
+	float speedMultiplier = 1;
+	if(glfwGetKey(Application::instance->GetWindow(), GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) speedMultiplier = 0.1f;
+	float cam_speed = this->speed * Application::instance->GetDeltaTime() * speedMultiplier;
     if(glfwGetKey(Application::instance->GetWindow(), GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) cam_speed *= 4;
 	if (glfwGetKey(Application::instance->GetWindow(), GLFW_KEY_W) == GLFW_PRESS) {
         delta += this->lookVector * cam_speed;
@@ -53,6 +54,7 @@ void Camera::HandleInput()
 void Camera::HandleMouseMovement(float xPos, float yPos)
 {
 	if(glfwGetKey(Application::instance->GetWindow(), GLFW_KEY_LEFT_ALT) == GLFW_PRESS) return;
+	
 	float xoffset = xPos - this->lastX;
 	float yoffset = this->lastY - yPos; 
 	this->lastX = xPos;

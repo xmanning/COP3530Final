@@ -2,7 +2,6 @@
 #include "Application.hpp"
 #include <vector>
 #include <chrono>
-#include <bitset>
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
 #include "imgui_impl_opengl3.h"
@@ -70,7 +69,7 @@ Application::Application(const char* title)
     this->shader = new Shader("res/shader.frag", "res/shader.vert");
     this->camera = new Camera(70, 0.1f, 1000.0f);
     this->DeltaTime = 1.0/60.0;
-    this->mesh = Mesh("res/fish.obj");
+    this->mesh = Mesh("res/suzanne.obj");
     this->bvh = new BVH(this->mesh);
     this->demonstrationRenderer = new DemonstrationRenderer();
 }
@@ -78,6 +77,7 @@ Application::Application(const char* title)
 void Application::Start()
 {
     this->Running = true;
+    const char* files[] = {"suzanne", "chair", "donut", "fish", "ladder", "traffic_cone"};
     while (!glfwWindowShouldClose(this->Window) && this->Running)
     {
         auto t_start = std::chrono::high_resolution_clock::now();
@@ -104,6 +104,12 @@ void Application::Start()
             posStream << "Position: " << pos.x << ", " << pos.y << ", " << pos.z;
             ImGui::Text(posStream.str().c_str());
             
+            if(ImGui::Combo("Selected Model", &currentFile, files, 6))
+            {
+                this->mesh = Mesh("res/" + std::string(files[currentFile]) + ".obj");
+                this->bvhDirty = true;
+            }
+
             std::stringstream triStream;
             triStream << mesh.getVertices().size() / 3;
             triStream << " triangles";
@@ -165,6 +171,7 @@ void Application::Update()
     {
         delete bvh;
         bvh = new BVH(this->mesh);
+        this->bvhDirty = false;
     }
 
     if (glfwGetKey(this->Window, GLFW_KEY_LEFT_ALT) == GLFW_PRESS)
@@ -193,7 +200,7 @@ void Application::Render()
     if(bvh->TestRay({rayOrigin[0], rayOrigin[1], rayOrigin[2]}, {rayDirection[0], rayDirection[1], rayDirection[2]}, hitPoint, triangle, boxes))
     {
         this->demonstrationRenderer->DrawLines({{rayOrigin[0], rayOrigin[1], rayOrigin[2]}, hitPoint});
-        std::cout << hitPoint.x << ", " << hitPoint.y << ", " << hitPoint.z << std::endl;
+
         this->demonstrationRenderer->SetColor({1,0,1});
         //this->demonstrationRenderer->DrawPoints({hitPoint});
         this->demonstrationRenderer->DrawTriangle(triangle);
@@ -226,6 +233,8 @@ Application::~Application()
 {
     delete this->camera;
     delete this->shader;
+    delete this->bvh;
+    delete this->demonstrationRenderer;
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
