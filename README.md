@@ -13,4 +13,7 @@ Use a BVH to divide the model and reduce the amount of triangles needed to check
 | 100,000 Datapoints       | Model with 100k+ Triangles            |
 # Stack
 We use GLFW & GLAD for rendering, IMGUI for UI, and GLM for basic math features such as `vec3`.
+
 Project is built via CMake.
+
+A prebuilt binary is provided as a release if building doesn't work for whatever reason.
